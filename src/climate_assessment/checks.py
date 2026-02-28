@@ -733,9 +733,13 @@ def reclassify_waste_and_other_co2_ar6(df: IamDataFrame) -> IamDataFrame:
     """
     Reclassify waste and other CO2 into the energy and industrial processes category
 
-    Reclassify CO2 emissions reported under Emissions|CO2|Other and
-    Emissions|CO2|Waste, instead putting them under
+    Reclassify CO2 emissions reported under Emissions|CO2|Other,
+    Emissions|CO2|Waste, Emissions|CO2|Other Capture and Removal, and
+    Emissions|CO2|Product Use, instead putting them under
     Emissions|CO2|Energy and Industrial Processes.
+    This function should be aligned with the version of common-definitions, or a similar
+    template that is used for the data ingested. 
+    See: https://github.com/IAMconsortium/common-definitions/blob/main/definitions/variable/emissions/emissions.yaml
 
     Parameters
     ----------
@@ -753,7 +757,12 @@ def reclassify_waste_and_other_co2_ar6(df: IamDataFrame) -> IamDataFrame:
 
     # list scenarios that do need changes (as they report variables that we reclassify under "Energy and Industrial Processes")
     df_change_scenarios = df.filter(
-        variable=["Emissions|CO2|Other", "Emissions|CO2|Waste"]
+        variable=[
+            "Emissions|CO2|Other",
+            "Emissions|CO2|Waste",
+            "Emissions|CO2|Other Capture and Removal",
+            "Emissions|CO2|Product Use",
+        ]
     ).index
     # dataframe with scenarios that DO need changes
     df_change = df.filter(index=df_change_scenarios, keep=True)
@@ -775,12 +784,14 @@ def reclassify_waste_and_other_co2_ar6(df: IamDataFrame) -> IamDataFrame:
         inplace=True,
     )
 
-    # use pandas to create new CO2|Energy and Industrial Processes by adding CO2|Other and CO2|Waste
+    # use pandas to create new CO2|Energy and Industrial Processes by adding all sub-variables
     df_change_pd = df_change.as_pandas()
     # which variables to sum
     varsum = [
         "Emissions|CO2|Waste",
         "Emissions|CO2|Other",
+        "Emissions|CO2|Other Capture and Removal",
+        "Emissions|CO2|Product Use",
         "Emissions|CO2|Energy and Industrial Processes|Incomplete",
     ]
     # not affected variables of the same scenario:
