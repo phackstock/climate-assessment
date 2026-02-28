@@ -737,8 +737,9 @@ def reclassify_waste_and_other_co2_ar6(df: IamDataFrame) -> IamDataFrame:
     Emissions|CO2|Waste, Emissions|CO2|Other Capture and Removal, and
     Emissions|CO2|Product Use, instead putting them under
     Emissions|CO2|Energy and Industrial Processes.
-    This function should be aligned with the version of common-definitions, or a similar
-    template that is used for the data ingested. 
+    This function should be aligned with the version of
+    common-definitions, or a similar template that is used
+    for the data ingested.
     See: https://github.com/IAMconsortium/common-definitions/blob/main/definitions/variable/emissions/emissions.yaml
 
     Parameters
