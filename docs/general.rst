@@ -47,14 +47,85 @@ also analyzed in the Reduced Complexity Model Intercomparison Project (RCMIP) Ph
 Expected Input (Step 1)
 =======================
 
-The expected input is in the following format, as either an Excel (.xlsx) or CSV (.csv) file, covering 2015, and then at minimum decadal (up to yearly detail is accepted) timesteps from 2020 to 2100.
+The expected input is in the following format, as either an Excel (.xlsx) or CSV (.csv) file.
 Currently, no meta data from the input data is used or preserved in the workflow.
-At minimum, one needs to report `Emissions|CO2|Energy and Industrial Processes`.
-Emissions baskets or species not in the table below are not considered for the eventual climate assessment, but are automatically infilled.
+At minimum, one needs to report ``Emissions|CO2|Energy and Industrial Processes``.
+Emissions species not in the tables below are not considered for the eventual climate assessment, but are automatically infilled.
 In this version, negative values are only allowed as input for CO2.
 
-NOTE: while the table below only shows "Emissions|CO2|AFOLU" and "Emissions|CO2|Energy and Industrial Processes", we are aware of some models also reporting the emissions variables "Emissions|CO2|Other" and "Emissions|CO2|Waste" under certain project templates, including the AR6 template.
-The way we deal with this, is that we (inside the function :func:reclassify_waste_and_other_co2_ar6()), add the "Emissions|CO2|Other" and "Emissions|CO2|Waste" variables to the "Emissions|CO2|Energy and Industrial Processes", assuming that these do not overlap, and assuming that the variables are not categorisable under AFOLU emissions.
+This follows the variable reporting criteria used in IPCC Sixth Assessment Report Working Group III for climate categorisation.
+With an minor update to allow for new CO2 sectors added to iiasa/common-definitions.
+
+Option A (with 2015, the harmonization year, being reported) is the preferred input format, but option B (with 2010 and 2020 reported, but not 2015) is possible too.
+
+Absolute minimum emissions
+-----------------
+
+Each of the following options describes the minimum set of emissions variables required for a successful climate run.
+At minimum, decadal timesteps are required.
+
+**Option A** (preferred; first timestep: 2015):
+
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+| Model  | Scenario  | Region  | Variable                                       | Unit            | 2015  | …  | 2100  |
++========+===========+=========+================================================+=================+=======+====+=======+
+|        |           | World   | Emissions|CO2|Energy and Industrial Processes  | Mt CO2/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+
+**Option B** (first timestep: 2010):
+
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+| Model  | Scenario  | Region  | Variable                                       | Unit            | 2010  | …  | 2100  |
++========+===========+=========+================================================+=================+=======+====+=======+
+|        |           | World   | Emissions|CO2|Energy and Industrial Processes  | Mt CO2/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+
+
+Minimum emissions with some level of fidelity
+---------------------------------------------
+
+Each of the following options describes the minimum set of emissions variables required for a successful climate run,
+for which the climate outcome can be determined with some level of fidelity, in line with IPCC AR6 minimum requirements.
+At minimum, decadal timesteps are required.
+
+**Option A** (preferred; first timestep: 2015):
+
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+| Model  | Scenario  | Region  | Variable                                       | Unit            | 2015  | …  | 2100  |
++========+===========+=========+================================================+=================+=======+====+=======+
+|        |           | World   | Emissions|CH4                                  | Mt CH4/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+|        |           | World   | Emissions|CO2|AFOLU                            | Mt CO2/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+|        |           | World   | Emissions|CO2|Energy and Industrial Processes  | Mt CO2/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+|        |           | World   | Emissions|N2O                                  | kt N2O/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+
+**Option B** (first timestep: 2010):
+
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+| Model  | Scenario  | Region  | Variable                                       | Unit            | 2010  | …  | 2100  |
++========+===========+=========+================================================+=================+=======+====+=======+
+|        |           | World   | Emissions|CH4                                  | Mt CH4/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+|        |           | World   | Emissions|CO2|AFOLU                            | Mt CO2/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+|        |           | World   | Emissions|CO2|Energy and Industrial Processes  | Mt CO2/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+|        |           | World   | Emissions|N2O                                  | kt N2O/yr       |       |    |       |
++--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
+
+Maximum emissions
+-----------------
+
+This is the maximum data that the climate-assessment workflow accepts; all other variables in the input data are ignored.
+Option A is preferred. Yearly timesteps from 2015 to 2100 are accepted; at minimum, decadal timesteps starting from 2015 and then 2020 to 2100 are required.
+
+NOTE: while option A only uses ``Emissions|CO2|AFOLU`` and ``Emissions|CO2|Energy and Industrial Processes``, option B additionally accepts ``Emissions|CO2|Other``, ``Emissions|CO2|Waste``, ``Emissions|CO2|Other Capture and Removal``, and ``Emissions|CO2|Product Use``.
+The way we deal with this, is that we (inside the function :func:`climate_assessment.checks.reclassify_waste_and_other_co2_ar6`), add these variables to ``Emissions|CO2|Energy and Industrial Processes``, assuming that they do not overlap with each other and are not categorisable under AFOLU emissions.
+
+**Option A** (preferred):
 
 +--------+-----------+---------+------------------------------------------------+-----------------+-------+----+----+-------+
 | Model  | Scenario  | Region  | Variable                                       | Unit            | 2015  | …  | …  | 2100  |
@@ -101,6 +172,62 @@ The way we deal with this, is that we (inside the function :func:reclassify_wast
 +--------+-----------+---------+------------------------------------------------+-----------------+-------+----+----+-------+
 |        |           | World   | Emissions|VOC                                  | Mt VOC/yr       |       |    |    |       |
 +--------+-----------+---------+------------------------------------------------+-----------------+-------+----+----+-------+
+
+**Option B** (same as option A, additionally accepts CO2 sub-variables that are reclassified into ``Emissions|CO2|Energy and Industrial Processes``):
+
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+| Model  | Scenario  | Region  | Variable                                         | Unit            | 2015  | …  | …  | 2100  |
++========+===========+=========+==================================================+=================+=======+====+====+=======+
+|        |           | World   | Emissions|BC                                     | Mt BC/yr        |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|CH4                                   | Mt CH4/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|CO                                    | Mt CO/yr        |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|CO2|AFOLU                              | Mt CO2/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|CO2|Energy and Industrial Processes    | Mt CO2/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|CO2|Other                              | Mt CO2/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|CO2|Other Capture and Removal          | Mt CO2/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|CO2|Product Use                        | Mt CO2/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|CO2|Waste                              | Mt CO2/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|HFC|HFC125                             | kt HFC125/yr    |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|HFC|HFC134a                            | kt HFC134a/yr   |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|HFC|HFC143a                            | kt HFC143a/yr   |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|HFC|HFC23                              | kt HFC23/yr     |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|HFC|HFC32                              | kt HFC32/yr     |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|HFC|HFC43-10                           | kt HFC43-10/yr  |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|N2O                                   | kt N2O/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|NH3                                   | Mt NH3/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|NOx                                   | Mt NO2/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|OC                                    | Mt OC/yr        |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|PFC|C2F6                               | kt C2F6/yr      |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|PFC|C6F14                              | kt C6F14/yr     |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|PFC|CF4                                | kt CF4/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|SF6                                   | kt SF6/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|Sulfur                                 | Mt SO2/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
+|        |           | World   | Emissions|VOC                                   | Mt VOC/yr       |       |    |    |       |
++--------+-----------+---------+--------------------------------------------------+-----------------+-------+----+----+-------+
 
 
 Workflow (Step 2-4)
