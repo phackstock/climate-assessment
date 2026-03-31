@@ -56,7 +56,7 @@ In this version, negative values are only allowed as input for CO2.
 This follows the variable reporting criteria used in IPCC Sixth Assessment Report Working Group III for climate categorisation.
 With an minor update to allow for new CO2 sectors added to iiasa/common-definitions.
 
-Option A (with 2015, the harmonization year, being reported) is the preferred input format, but option B (with 2010 and 2020 reported, but not 2015) is possible too. 
+Option A (with 2015, the harmonization year, being reported) is the preferred input format, but option B (with 2010 and 2020 reported, but not 2015) is possible too.
 
 Absolute minimum emissions
 -----------------
@@ -81,7 +81,7 @@ At minimum, decadal timesteps are required.
 +--------+-----------+---------+------------------------------------------------+-----------------+-------+----+-------+
 
 
-Minimum emissions with some level of fidelity 
+Minimum emissions with some level of fidelity
 ---------------------------------------------
 
 Each of the following options describes the minimum set of emissions variables required for a successful climate run,

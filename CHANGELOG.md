@@ -40,7 +40,7 @@ The changes listed in this file are categorised as follows:
 
 ### Changed
 
-* ([#90](https://github.com/iiasa/climate-assessment/pull/90])) Update CO2 sectors for 
+* ([#90](https://github.com/iiasa/climate-assessment/pull/90])) Update CO2 sectors for
   newer common-definitions
 * ([#55](https://github.com/iiasa/climate-assessment/pull/55])) Switched to using poetry
   for environment management
